@@ -6,14 +6,14 @@
  */
 public class SelfTest {
     public static void main(String[] args) throws Exception {
+        String[] data = {"irving", "pipi", "yarly"};
         LinkedList linkedList = new LinkedList();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < data.length; i++) {
             linkedList.add(i, i);
         }
-        System.out.println(linkedList.size());
-        linkedList.printLinkedList();
-        System.out.println(linkedList.remove(0));
-        linkedList.printLinkedList();
-        System.out.println(linkedList.size());
+        for (int i = data.length - 1; i >= 0; i--) {
+            System.out.println(linkedList.remove(i));
+        }
+
     }
 }
