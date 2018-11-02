@@ -13,12 +13,7 @@ public class LinkedList implements List {
         this.root = new LinkListNode();
     }
 
-    public LinkedList(LinkListNode root) {
-        this.root = root;
-    }
-
-
-    private class LinkListNode {
+    class LinkListNode {
 
         private LinkListNode nextNode;
 
@@ -64,24 +59,12 @@ public class LinkedList implements List {
     }
 
     private LinkListNode findLastNode(LinkListNode currentNode) {
-        checkListValidation("Cannot append value to an un-initialized linkList");
         return currentNode.hasNextNode() ? findLastNode(currentNode.nextNode) : currentNode;
-    }
-
-    private void checkListValidation(String message) {
-        if (!listInitialized()) {
-            throw new RuntimeException(message);
-        }
-    }
-
-    private boolean listInitialized() {
-        return root != null;
     }
 
     private boolean isEmpty() {
         return this.root.getData() == null;
     }
-
 
     private LinkListNode findNodeBeforePosition(int pos) {
         LinkListNode currentNode = this.root;
@@ -108,6 +91,33 @@ public class LinkedList implements List {
         }
     }
 
+    private LinkListNode findNodeAtPosition(int pos) {
+        LinkListNode currentNode = this.root;
+        for (int i = 0; i <= pos - 1; i++) {
+            if (!currentNode.hasNextNode()) {
+                throw new ArrayIndexOutOfBoundsException();
+            }
+            currentNode = currentNode.getNextNode();
+        }
+        return currentNode;
+    }
+
+    private void checkIndexValidationUnbound(int pos) {
+        if (pos < 0 || pos + 1 > this.size()) {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    private void checkIndexValidationBound(int pos) {
+        if (pos < 0 || pos > this.size()) {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    private int getSize(LinkListNode currentNode) {
+        return currentNode.hasNextNode() ? 1 + getSize(currentNode.getNextNode()) : 0;
+    }
+
     @Override
     public void add(Object obj) throws Exception {
         checkValueValidation(obj);
@@ -121,6 +131,7 @@ public class LinkedList implements List {
 
     @Override
     public void add(int pos, Object obj) throws Exception {
+        checkIndexValidationUnbound(pos);
         checkValueValidation(obj);
         LinkListNode targetNode = findNodeBeforePosition(pos);
         if (isEmpty()) {
@@ -134,6 +145,7 @@ public class LinkedList implements List {
 
     @Override
     public Object get(int pos) throws Exception {
+        checkIndexValidationBound(pos);
         Object object = findNodeAtPosition(pos).getData();
         if (null == object) {
             throw new RuntimeException("fetching value from a empty linkedList");
@@ -141,19 +153,9 @@ public class LinkedList implements List {
         return object;
     }
 
-    private LinkListNode findNodeAtPosition(int pos) {
-        LinkListNode currentNode = this.root;
-        for (int i = 0; i <= pos - 1; i++) {
-            if (!currentNode.hasNextNode()) {
-                throw new ArrayIndexOutOfBoundsException();
-            }
-            currentNode = currentNode.getNextNode();
-        }
-        return currentNode;
-    }
-
     @Override
     public Object remove(int pos) throws Exception {
+        checkIndexValidationBound(pos);
         if (pos == 0) {
             // removing the head
             Object data = root.getData();
@@ -177,12 +179,7 @@ public class LinkedList implements List {
 
     @Override
     public int size() {
-        checkListValidation("Cannot append value to an un-initialized linkList");
         return isEmpty() ? 0 : 1 + getSize(root);
-    }
-
-    private int getSize(LinkListNode currentNode) {
-        return currentNode.hasNextNode() ? 1 + getSize(currentNode.getNextNode()) : 0;
     }
 
 }
